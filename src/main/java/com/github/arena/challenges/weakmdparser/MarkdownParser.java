@@ -19,6 +19,8 @@ public class MarkdownParser {
                 parsedLine = parseParagraph(lines[i]);
             }
 
+            parsedLine = parseEmphasisedTexts(parsedLine);
+
             if (parsedLine.matches("(<li>).*") && !parsedLine.matches("(<h).*") && !parsedLine.matches("(<p>).*") && !activeList) {
                 activeList = true;
                 result = result + "<ul>";
@@ -56,15 +58,14 @@ public class MarkdownParser {
     private String parseListItem(String markdown) {
         if (markdown.startsWith("*")) {
             String skipAsterisk = markdown.substring(2);
-            String listItemString = parseEmphasisedTexts(skipAsterisk);
-            return "<li>" + listItemString + "</li>";
+            return "<li>" + skipAsterisk + "</li>";
         }
 
         return null;
     }
 
     private String parseParagraph(String markdown) {
-        return "<p>" + parseEmphasisedTexts(markdown) + "</p>";
+        return "<p>" + markdown + "</p>";
     }
 
     private String parseEmphasisedTexts(String markdown) {
