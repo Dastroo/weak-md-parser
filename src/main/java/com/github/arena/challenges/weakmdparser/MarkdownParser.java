@@ -44,7 +44,7 @@ public class MarkdownParser {
     private String parseHeading(String markdown) {
         int count = 0;
 
-        for (int i = 0; i < markdown.length() && markdown.charAt(i) == '#'; i++) {
+        while (count < markdown.length() && markdown.charAt(count) == '#') {
             count++;
         }
 
@@ -52,7 +52,7 @@ public class MarkdownParser {
             return null;
         }
 
-        return "<h" + Integer.toString(count) + ">" + markdown.substring(count + 1) + "</h" + Integer.toString(count) + ">";
+        return String.format("<h%d>%s</h%d>", count, markdown.substring(count).trim(), count);
     }
 
     private String parseListItem(String markdown) {
