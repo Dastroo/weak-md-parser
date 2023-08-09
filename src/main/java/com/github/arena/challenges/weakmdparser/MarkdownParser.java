@@ -4,41 +4,41 @@ public class MarkdownParser {
 
     public String parse(String markdown) {
         String[] lines = markdown.split("\n");
-        String result = "";
+        StringBuilder result = new StringBuilder();
         boolean activeList = false;
 
-        for (int i = 0; i < lines.length; i++) {
+        for (String line : lines) {
 
-            String parsedLine = parseHeading(lines[i]);
+            String parsedLine = parseHeading(line);
 
             if (parsedLine == null) {
-                parsedLine = parseListItem(lines[i]);
+                parsedLine = parseListItem(line);
             }
 
             if (parsedLine == null) {
-                parsedLine = parseParagraph(lines[i]);
+                parsedLine = parseParagraph(line);
+            }
+
+            if (parsedLine.startsWith("<li>") && !activeList) {
+                activeList = true;
+                result.append("<ul>");
+            }
+
+            if (!parsedLine.startsWith("<li>") && activeList) {
+                activeList = false;
+                result.append("</ul>");
             }
 
             parsedLine = parseEmphasisedTexts(parsedLine);
 
-            if (parsedLine.matches("(<li>).*") && !parsedLine.matches("(<h).*") && !parsedLine.matches("(<p>).*") && !activeList) {
-                activeList = true;
-                result = result + "<ul>";
-                result = result + parsedLine;
-            } else if (!parsedLine.matches("(<li>).*") && activeList) {
-                activeList = false;
-                result = result + "</ul>";
-                result = result + parsedLine;
-            } else {
-                result = result + parsedLine;
-            }
+            result.append(parsedLine);
         }
 
         if (activeList) {
-            result = result + "</ul>";
+            result.append("</ul>");
         }
 
-        return result;
+        return result.toString();
     }
 
     private String parseHeading(String markdown) {
