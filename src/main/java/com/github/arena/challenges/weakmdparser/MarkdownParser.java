@@ -68,14 +68,18 @@ public class MarkdownParser {
         return "<p>" + markdown + "</p>";
     }
 
+    @SuppressWarnings("UnnecessaryLocalVariable")
     private String parseEmphasisedTexts(String markdown) {
+        String boldPattern = "__(.+)__";
+        String boldReplacement = "<strong>$1</strong>";
+        String italicPattern = "_(.+)_";
+        String italicReplacement = "<em>$1</em>";
 
-        String lookingFor = "__(.+)__";
-        String update = "<strong>$1</strong>";
-        String workingOn = markdown.replaceAll(lookingFor, update);
+        // order matters, bold needs to be before italic text replacement
+        String replacedBoldText = markdown.replaceAll(boldPattern, boldReplacement);
 
-        lookingFor = "_(.+)_";
-        update = "<em>$1</em>";
-        return workingOn.replaceAll(lookingFor, update);
+        String replacedItalicText = replacedBoldText.replaceAll(italicPattern, italicReplacement);
+
+        return replacedItalicText;
     }
 }
